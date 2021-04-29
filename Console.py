@@ -15,8 +15,12 @@ async def process_message(message):
 
 async def consume(hostname: str, port: int) -> None:
     websocket_resource_url = f"ws://{hostname}:{port}"
-    async with websockets.connect(websocket_resource_url, ping_interval=None) as websocket:
-        await consumer_handler(websocket)
+    while True:
+        try:
+            async with websockets.connect(websocket_resource_url, ping_interval=None) as websocket:
+                await consumer_handler(websocket)
+        except:
+            print("Error")
 
 
 if __name__ == "__main__":
