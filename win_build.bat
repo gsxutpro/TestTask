@@ -1,0 +1,1 @@
+call python -m venv venv & .\venv\Scripts\activate.bat & .\venv\Scripts\python.exe -m pip install --upgrade pip & .\venv\Scripts\pip3.exe install -r requirements.txt

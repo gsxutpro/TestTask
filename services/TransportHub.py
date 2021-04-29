@@ -1,9 +1,12 @@
 import asyncio
+import logging
 import websockets
-from websockets import WebSocketClientProtocol
+from websockets import WebSocketClientProtocol, ConnectionClosed
+
+logging.basicConfig(level='INFO')
 
 
-class Server():
+class SimpleTransportHub:
     clients = set()
 
     async def register(self, ws: WebSocketClientProtocol,) -> None:
@@ -22,6 +25,8 @@ class Server():
         await self.register(ws)
         try:
             await self.distribute(ws)
+        except ConnectionClosed:
+            logging.info('connection suddenly closed')
         finally:
             await self.unregister(ws)
 
@@ -30,7 +35,7 @@ class Server():
             await self.send_to_clients(message)
 
 
-server = Server()
+server = SimpleTransportHub()
 start_server = websockets.serve(server.ws_handler, 'localhost', 4000)
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start_server)
