@@ -15,10 +15,14 @@ def read_config(filename='config.yaml'):
 
 
 class SimpleTransportHub:
+
     clients = set()
     topic_clients = dict()
 
     async def register(self, ws: WebSocketClientProtocol) -> None:
+        """
+        Регистрация клиента на получение сообщений
+        """
         topic = 'all'
         if 'topic' in ws.request_headers.keys():
             topic = ws.request_headers['topic']
@@ -29,6 +33,9 @@ class SimpleTransportHub:
         print(ws.remote_address, ' connected')
 
     async def unregister(self, ws: WebSocketClientProtocol) -> None:
+        """
+        Отмена регистрации клиента на получение сообщений
+        """
         topic = 'all'
         if 'topic' in ws.request_headers.keys():
             topic = ws.request_headers['topic']
@@ -46,10 +53,18 @@ class SimpleTransportHub:
             await self.unregister(ws)
 
     async def distribute(self, ws: WebSocketClientProtocol) -> None:
+        """
+        Распространение сообщений на всех потребителей
+        :param ws:
+        :return:
+        """
         async for message in ws:
             await self.send_to_clients(message)
 
     async def send_to_clients(self, message: str) -> None:
+        """
+        Отправка потребителю сообщения, в соответствии с топиком сообщения
+        """
         if self.topic_clients:
             topic = await self.get_message_topic(message)
             clients = self.topic_clients.get(topic)
@@ -57,6 +72,11 @@ class SimpleTransportHub:
                 await asyncio.wait([client.send(message) for client in clients])
 
     async def get_message_topic(self, message: str) -> str:
+        """
+        Получить топик сообщения
+        :param message: строка в формате JSON
+        :return: топик сообщения
+        """
         result = 'all'
         try:
             json_obj = json.loads(message)

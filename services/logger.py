@@ -25,6 +25,12 @@ async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
 
 
 def convert_message_to_str(message: str) -> str:
+    """
+    Преобразование входного сообщений в формате JSON в строку, требуемого формата
+    :param message: строка в формате JSON
+    :return:
+    """
+
     msg_dict = json.loads(message)
     # timestamp: 2021-04-27 12:03; open: 55000; low: 54990; high: 55023; close: 55019
     res = f"timestamp: {msg_dict['dt']}; open: {msg_dict['open']:.0f}; low: {msg_dict['low']:.0f}; high: " \

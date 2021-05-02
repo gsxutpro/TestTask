@@ -49,7 +49,13 @@ class TestTDClientFactory(ReconnectingClientFactory, WebSocketClientFactory):
 
 
 def process_message(msg):
-    # сохранение и аггрегация данных для ohlc за период
+    """
+    Сохранение и аггрегация данных для ohlc за период
+
+    :param msg: словать значений от внешнего API
+    """
+    store_trade(msg)
+
     aggregate_ohlc(msg)
     # в качестве топика сообщения используется значение торговаой пары
     msg['topic'] = str(msg['s'])
@@ -57,6 +63,10 @@ def process_message(msg):
 
 
 def store_trade(msg):
+    """
+    Сохранение сделки в текущий период
+    :param msg: словать значений от внешнего API
+    """
     keys = ['s', 'E', 'p', 'q', 'T']
     to_store = {k: v for k, v in msg.items() if k in keys}
     to_store['p'] = float(to_store['p'])
@@ -69,9 +79,10 @@ def store_trade(msg):
 
 
 def aggregate_ohlc(msg):
-    # сохранение сделки
-    store_trade(msg)
-    # аггрегирование данных сделок за 1 минуту по серверному времени
+    """
+    Аггрегирование данных сделок за 1 минуту по серверному времени
+    :param msg: словать значений от внешнего API
+    """
     for s, tr in trades.items():
         if check_1m(tr):
             last_minute = tr[-2]['dt'].minute
@@ -83,6 +94,12 @@ def aggregate_ohlc(msg):
 
 
 def get_ohlc_volume(lst, period):
+    """
+    Получает OHLCV данные из списка сделок за период
+    :param lst: список входных данных по сделкам
+    :param period: период
+    :return: словать OHLCV данных
+    """
     prices = [x['p'] for x in lst]
     res = {'topic': f"{lst[0]['s']}_{str(period)}", 'volume': sum([float(x['q']) for x in lst]), 'open': prices[0],
            'high': max(prices), 'low': min(prices), 'close': prices[-1], 'dt': lst[0]['dt'].strftime("%Y-%m-%d %H:%M")}
@@ -90,6 +107,11 @@ def get_ohlc_volume(lst, period):
 
 
 def check_1m(tr):
+    """
+    Проверка наступления нового периода (1m)
+    :param tr:
+    :return: True -- новый период наступил, False -- новый период не наступил
+    """
     if len(tr) < 2:
         return False
     minute1 = tr[-1]['dt'].minute
@@ -98,6 +120,10 @@ def check_1m(tr):
 
 
 def send_message(msg):
+    """
+    Отправка сообщения в формате JSON на trunsport_hub
+    :param msg: сообщение для отправки
+    """
     try:
         json_message = json.dumps(msg)
         global client
@@ -110,6 +136,11 @@ def send_message(msg):
 
 
 def connect_to_transport_hub(host, port):
+    """
+    Подключение к сервису trunsport_hub
+    :param host: адрес сервиса
+    :param port: порт сервиса
+    """
     try:
         factory = TestTDClientFactory(f"ws://{host}:{port}")
         connectWS(factory)
@@ -118,6 +149,13 @@ def connect_to_transport_hub(host, port):
 
 
 def serve(symbol, api_key, api_secret):
+    """
+    Запуск клиента Binance API
+    :param symbol:
+    :param api_key:
+    :param api_secret:
+    :return:
+    """
     binance_client = Client(api_key, api_secret)
     bm = BinanceSocketManager(binance_client)
     bm.start_trade_socket(symbol, process_message)
