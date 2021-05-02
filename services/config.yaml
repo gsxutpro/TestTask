@@ -1,0 +1,9 @@
+transport_hub:
+ host: localhost
+ port: 4000
+binance_api:
+ api_key: jf6jbytIakmjQihPJCK0BegeqHkWDA1FlavLHszKohpIcQzQmSKPyUjaBmvnJyNs
+ api_secret: vG22RvWl45kdBlWq9DGexkmKZwqjRjC9MmXr7VPF38yUrcU1yEXtQZuVwkz9KUrI
+binance_pair:
+ symbol: BTCUSDT
+ symbol_period: BTCUSDT_1m

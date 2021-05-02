@@ -1,10 +1,17 @@
 import asyncio
 import logging
-import websockets
-from websockets import WebSocketClientProtocol, ConnectionClosed
 import json
+import websockets
+import yaml
+from websockets import WebSocketClientProtocol, ConnectionClosed
+
 
 logging.basicConfig(level='INFO')
+
+
+def read_config(filename='config.yaml'):
+    with open(filename) as file:
+        return yaml.full_load(file)
 
 
 class SimpleTransportHub:
@@ -13,7 +20,6 @@ class SimpleTransportHub:
 
     async def register(self, ws: WebSocketClientProtocol) -> None:
         topic = 'all'
-        self.clients.add(ws)
         if 'topic' in ws.request_headers.keys():
             topic = ws.request_headers['topic']
         if topic not in self.topic_clients.keys():
@@ -28,7 +34,6 @@ class SimpleTransportHub:
             topic = ws.request_headers['topic']
         if topic in self.topic_clients.keys():
             self.topic_clients[topic].discard(ws)
-        self.clients.remove(ws)
         print(ws.remote_address, ' disconnected')
 
     async def ws_handler(self, ws: WebSocketClientProtocol, uri: str) -> None:
@@ -45,7 +50,7 @@ class SimpleTransportHub:
             await self.send_to_clients(message)
 
     async def send_to_clients(self, message: str) -> None:
-        if self.clients:
+        if self.topic_clients:
             topic = await self.get_message_topic(message)
             clients = self.topic_clients.get(topic)
             if clients:
@@ -62,8 +67,9 @@ class SimpleTransportHub:
             return result
 
 
+config = read_config()
 server = SimpleTransportHub()
-start_server = websockets.serve(server.ws_handler, 'localhost', 4000)
+start_server = websockets.serve(server.ws_handler, config['transport_hub']['host'], config['transport_hub']['port'])
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start_server)
 loop.run_forever()

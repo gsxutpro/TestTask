@@ -1,9 +1,15 @@
 import asyncio
 import logging
 import websockets
+import yaml
 from websockets import WebSocketClientProtocol
 
 logging.basicConfig(level='INFO')
+
+
+def read_config(filename='config.yaml'):
+    with open(filename) as file:
+        return yaml.full_load(file)
 
 
 async def consumer_handler(websocket: WebSocketClientProtocol) -> None:
@@ -27,5 +33,9 @@ async def consume(hostname: str, port: int, topic: str) -> None:
 
 
 if __name__ == "__main__":
+    config = read_config()
+    symbol = config['binance_pair']['symbol']
+    host = config['transport_hub']['host']
+    port = config['transport_hub']['port']
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(consume('localhost', 4000, 'BTCUSDT'))
+    loop.run_until_complete(consume(host, port, symbol))

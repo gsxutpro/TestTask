@@ -2,3 +2,4 @@ websockets~=8.1
 twisted~=21.2.0
 autobahn~=21.3.1
 python-binance==0.7.11
+pyyaml==5.1.2

@@ -1,58 +1,51 @@
 import logging
-from binance.client import Client
-from binance.websockets import BinanceSocketManager
-from time import sleep
-from twisted.internet import reactor
+import json
+import yaml
+from datetime import datetime
 from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol, connectWS
 from twisted.internet.protocol import ReconnectingClientFactory
-import json
-from datetime import datetime
+from binance.websockets import BinanceSocketManager
+from binance.client import Client
 
 
 logging.basicConfig(level="INFO")
 trades = {}
+client = None
 
 
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+def read_config(filename='config.yaml'):
+    with open(filename) as file:
+        return yaml.full_load(file)
 
 
-class ProducerClientProtocol(WebSocketClientProtocol,  metaclass=Singleton):
+class ProducerClientProtocol(WebSocketClientProtocol):
+
     def onOpen(self):
+        global client
+        client = self
         logging.info(msg='connected to transport hub')
 
-
-class TestTDReconnectingClientFactory(ReconnectingClientFactory):
-
-    initialDelay = 0.1
-
-    maxDelay = 10
-
-    maxRetries = 5
+    def onConnect(self, response):
+        self.factory.resetDelay()
 
 
-class TestTDClientFactory(WebSocketClientFactory, TestTDReconnectingClientFactory):
+class TestTDClientFactory(ReconnectingClientFactory, WebSocketClientFactory):
 
     protocol = ProducerClientProtocol
-    _reconnect_error_payload = {
-        'e': 'error',
-        'm': 'Max reconnect retries reached'
-    }
 
-    def clientConnectionFailed(self, connector, reason):
-        self.retry(connector)
-        if self.retries > self.maxRetries:
-            self.callback(self._reconnect_error_payload)
+    maxDelay = 10
+    maxRetries = 5
+
+    def startedConnecting(self, connector):
+        print('Started to connect.')
 
     def clientConnectionLost(self, connector, reason):
-        self.retry(connector)
-        if self.retries > self.maxRetries:
-            self.callback(self._reconnect_error_payload)
+        print('Lost connection. Reason: {}'.format(reason))
+        ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+
+    def clientConnectionFailed(self, connector, reason):
+        print('Connection failed. Reason: {}'.format(reason))
+        ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
 
 
 def process_message(msg):
@@ -65,7 +58,8 @@ def process_message(msg):
 
 def store_trade(msg):
     keys = ['s', 'E', 'p', 'q', 'T']
-    to_store = {k: v for k,v in msg.items() if k in keys}
+    to_store = {k: v for k, v in msg.items() if k in keys}
+    to_store['p'] = float(to_store['p'])
     to_store['dt'] = datetime.fromtimestamp(int(to_store['T']) / 1000)
     symbol = msg['s']
     if symbol in trades.keys():
@@ -83,13 +77,15 @@ def aggregate_ohlc(msg):
             last_minute = tr[-2]['dt'].minute
             tr_filt = list(filter(lambda x: x['dt'].minute == last_minute, trades[s]))
             res_dict = get_ohlc_volume(tr_filt, '1m')
+            last_trade = tr[-1]
+            trades[s]=[last_trade]
             send_message(res_dict)
 
 
 def get_ohlc_volume(lst, period):
     prices = [x['p'] for x in lst]
     res = {'topic': f"{lst[0]['s']}_{str(period)}", 'volume': sum([float(x['q']) for x in lst]), 'open': prices[0],
-           'high': max(prices), 'low': min(prices), 'close': prices[-1], 'dt': lst[0]['dt'].strftime("%d/%m/%Y, %H:%M")}
+           'high': max(prices), 'low': min(prices), 'close': prices[-1], 'dt': lst[0]['dt'].strftime("%Y-%m-%d %H:%M")}
     return res
 
 
@@ -104,39 +100,38 @@ def check_1m(tr):
 def send_message(msg):
     try:
         json_message = json.dumps(msg)
-        if "state" in ProducerClientProtocol().__dict__.keys() \
-                and ProducerClientProtocol().state == ProducerClientProtocol.STATE_OPEN:
-            ProducerClientProtocol().sendMessage(bytes(json_message.encode('utf8')))
+        global client
+        if client is not None:
+            if "state" in client.__dict__.keys() \
+                    and client.state == ProducerClientProtocol.STATE_OPEN:
+                client.sendMessage(bytes(json_message.encode('utf8')))
     except ValueError:
         logging.error('error process binance message')
 
 
-def serve():
-    api_key = 'jf6jbytIakmjQihPJCK0BegeqHkWDA1FlavLHszKohpIcQzQmSKPyUjaBmvnJyNs'
-    api_secret = 'vG22RvWl45kdBlWq9DGexkmKZwqjRjC9MmXr7VPF38yUrcU1yEXtQZuVwkz9KUrI'
-
-    client = Client(api_key, api_secret)
-    bm = BinanceSocketManager(client)
-
-    conn_key = bm.start_trade_socket('BTCUSDT', process_message)
-
-    bm.start()
-    # sleep(130)
-    # bm.stop_socket(conn_key)
-    # bm.close()
-
-
 def connect_to_transport_hub(host, port):
     try:
-        if True:
-            factory = TestTDClientFactory(f"ws://{host}:{port}")
-            factory.protocol = ProducerClientProtocol
-            connectWS(factory)
+        factory = TestTDClientFactory(f"ws://{host}:{port}")
+        connectWS(factory)
     except BaseException:
         print('error connecting to transport hub')
 
 
+def serve(symbol, api_key, api_secret):
+    binance_client = Client(api_key, api_secret)
+    bm = BinanceSocketManager(binance_client)
+    bm.start_trade_socket(symbol, process_message)
+    # запуск
+    bm.start()
+
+
 if __name__ == '__main__':
-    connect_to_transport_hub('localhost', 4000)
-    serve()
-    # reactor.stop()
+    config = read_config()
+    api_key = config['binance_api']['api_key']
+    api_secret = config['binance_api']['api_secret']
+    symbol = config['binance_pair']['symbol']
+    host = config['transport_hub']['host']
+    port = config['transport_hub']['port']
+    connect_to_transport_hub(host, port)
+    serve(symbol, api_key, api_secret)
+
