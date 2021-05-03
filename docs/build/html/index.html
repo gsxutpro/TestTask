@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to TestTaskTDigital’s documentation! &#8212; документация TestTaskTDigital </title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-services.logger">
+<span id="welcome-to-testtasktdigital-s-documentation"></span><h1>Welcome to TestTaskTDigital’s documentation!<a class="headerlink" href="#module-services.logger" title="Ссылка на этот заголовок">¶</a></h1>
+<dl class="function">
+<dt id="services.logger.consume">
+<em class="property">async </em><code class="sig-prename descclassname">services.logger.</code><code class="sig-name descname">consume</code><span class="sig-paren">(</span><em class="sig-param">hostname: str</em>, <em class="sig-param">port: int</em>, <em class="sig-param">topic</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#services.logger.consume" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Подключение к transport hub. Через headers передается topic, который желает получать данный сервис - потребитель.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> – хост transport hub</p></li>
+<li><p><strong>port</strong> – порт transport hub</p></li>
+<li><p><strong>topic</strong> – имя канала, на который подписывается данный сервис</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.logger.convert_message_to_str">
+<code class="sig-prename descclassname">services.logger.</code><code class="sig-name descname">convert_message_to_str</code><span class="sig-paren">(</span><em class="sig-param">message: str</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#services.logger.convert_message_to_str" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразование входного сообщений в формате JSON в строку, требуемого формата.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>message</strong> – строка в формате JSON</p>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p>строка в требуемом формате</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-services.data_gateway"></span><dl class="class">
+<dt id="services.data_gateway.ProducerClientProtocol">
+<em class="property">class </em><code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">ProducerClientProtocol</code><a class="headerlink" href="#services.data_gateway.ProducerClientProtocol" title="Ссылка на это определение">¶</a></dt>
+<dd><dl class="method">
+<dt id="services.data_gateway.ProducerClientProtocol.onConnect">
+<code class="sig-name descname">onConnect</code><span class="sig-paren">(</span><em class="sig-param">response</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.ProducerClientProtocol.onConnect" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Callback fired directly after WebSocket opening handshake when new WebSocket server
+connection was established.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>response</strong> (instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">autobahn.websocket.protocol.ConnectionResponse</span></code>) – WebSocket connection response information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="services.data_gateway.ProducerClientProtocol.onOpen">
+<code class="sig-name descname">onOpen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.ProducerClientProtocol.onOpen" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Implements <code class="xref py py-func docutils literal notranslate"><span class="pre">autobahn.websocket.interfaces.IWebSocketChannel.onOpen()</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="services.data_gateway.TestTDClientFactory">
+<em class="property">class </em><code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">TestTDClientFactory</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.TestTDClientFactory" title="Ссылка на это определение">¶</a></dt>
+<dd><dl class="method">
+<dt id="services.data_gateway.TestTDClientFactory.clientConnectionFailed">
+<code class="sig-name descname">clientConnectionFailed</code><span class="sig-paren">(</span><em class="sig-param">connector</em>, <em class="sig-param">reason</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.TestTDClientFactory.clientConnectionFailed" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Called when a connection has failed to connect.</p>
+<p>It may be useful to call connector.connect() - this will reconnect.</p>
+<p>&#64;type reason: L{twisted.python.failure.Failure}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="services.data_gateway.TestTDClientFactory.clientConnectionLost">
+<code class="sig-name descname">clientConnectionLost</code><span class="sig-paren">(</span><em class="sig-param">connector</em>, <em class="sig-param">reason</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.TestTDClientFactory.clientConnectionLost" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Called when an established connection is lost.</p>
+<p>It may be useful to call connector.connect() - this will reconnect.</p>
+<p>&#64;type reason: L{twisted.python.failure.Failure}</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="services.data_gateway.TestTDClientFactory.protocol">
+<code class="sig-name descname">protocol</code><a class="headerlink" href="#services.data_gateway.TestTDClientFactory.protocol" title="Ссылка на это определение">¶</a></dt>
+<dd><p>псевдоним класса <a class="reference internal" href="#services.data_gateway.ProducerClientProtocol" title="services.data_gateway.ProducerClientProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProducerClientProtocol</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="services.data_gateway.TestTDClientFactory.startedConnecting">
+<code class="sig-name descname">startedConnecting</code><span class="sig-paren">(</span><em class="sig-param">connector</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.TestTDClientFactory.startedConnecting" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Called when a connection has been started.</p>
+<p>You can call connector.stopConnecting() to stop the connection attempt.</p>
+<p>&#64;param connector: a Connector object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.aggregate_ohlc">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">aggregate_ohlc</code><span class="sig-paren">(</span><em class="sig-param">msg</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.aggregate_ohlc" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Аггрегирование данных сделок за 1 минуту по серверному времени</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>msg</strong> – словать значений от внешнего API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.check_1m">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">check_1m</code><span class="sig-paren">(</span><em class="sig-param">tr</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.check_1m" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Проверка наступления нового периода (1m)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>tr</strong> – </p>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p>True – новый период наступил, False – новый период не наступил</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.connect_to_transport_hub">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">connect_to_transport_hub</code><span class="sig-paren">(</span><em class="sig-param">host</em>, <em class="sig-param">port</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.connect_to_transport_hub" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Подключение к сервису trunsport_hub</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> – адрес сервиса</p></li>
+<li><p><strong>port</strong> – порт сервиса</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.get_ohlc_volume">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">get_ohlc_volume</code><span class="sig-paren">(</span><em class="sig-param">lst</em>, <em class="sig-param">period</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.get_ohlc_volume" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Получает OHLCV данные из списка сделок за период</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lst</strong> – список входных данных по сделкам</p></li>
+<li><p><strong>period</strong> – период</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p>словать OHLCV данных</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.process_message">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">process_message</code><span class="sig-paren">(</span><em class="sig-param">msg</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.process_message" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Сохранение и аггрегация данных для ohlc за период</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>msg</strong> – словать значений от внешнего API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.send_message">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">send_message</code><span class="sig-paren">(</span><em class="sig-param">msg</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.send_message" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Отправка сообщения в формате JSON на trunsport_hub</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>msg</strong> – сообщение для отправки</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.serve">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">serve</code><span class="sig-paren">(</span><em class="sig-param">symbol</em>, <em class="sig-param">api_key</em>, <em class="sig-param">api_secret</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.serve" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Запуск клиента Binance API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – </p></li>
+<li><p><strong>api_key</strong> – </p></li>
+<li><p><strong>api_secret</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="services.data_gateway.store_trade">
+<code class="sig-prename descclassname">services.data_gateway.</code><code class="sig-name descname">store_trade</code><span class="sig-paren">(</span><em class="sig-param">msg</em><span class="sig-paren">)</span><a class="headerlink" href="#services.data_gateway.store_trade" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Сохранение сделки в текущий период</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>msg</strong> – словать значений от внешнего API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-services.transport_hub"></span><span class="target" id="module-console"></span><dl class="function">
+<dt id="console.consume">
+<em class="property">async </em><code class="sig-prename descclassname">console.</code><code class="sig-name descname">consume</code><span class="sig-paren">(</span><em class="sig-param">hostname: str</em>, <em class="sig-param">port: int</em>, <em class="sig-param">topic: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#console.consume" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Подключение к transport hub. Через headers передается topic, который желает получать данный сервис - потребитель.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> – хост transport hub</p></li>
+<li><p><strong>port</strong> – порт transport hub</p></li>
+<li><p><strong>topic</strong> – имя канала, на который подписывается данный сервис</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="console.convert_message_to_str">
+<code class="sig-prename descclassname">console.</code><code class="sig-name descname">convert_message_to_str</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#console.convert_message_to_str" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Преобразование входного сообщений в формате JSON в строку, требуемого формата</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>message</strong> – строка в формате JSON</p>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p>строка в требуемом формате</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="console.process_message">
+<em class="property">async </em><code class="sig-prename descclassname">console.</code><code class="sig-name descname">process_message</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#console.process_message" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Обработка поступившего сообщения</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры</dt>
+<dd class="field-odd"><p><strong>message</strong> – строка в формате JSON</p>
+</dd>
+<dt class="field-even">Результат</dt>
+<dd class="field-even"><p>строка в требуемом формате</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Ссылка на этот заголовок">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Алфавитный указатель</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Состав модуля</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Поиск</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">TestTaskTDigital</a></h1>
+
+
+
+
+
+
+
+
+<h3>Навигация</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Mikhail Sidorov.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
