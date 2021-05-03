@@ -55,8 +55,8 @@ class SimpleTransportHub:
     async def distribute(self, ws: WebSocketClientProtocol) -> None:
         """
         Распространение сообщений на всех потребителей
+
         :param ws:
-        :return:
         """
         async for message in ws:
             await self.send_to_clients(message)
@@ -74,6 +74,7 @@ class SimpleTransportHub:
     async def get_message_topic(self, message: str) -> str:
         """
         Получить топик сообщения
+
         :param message: строка в формате JSON
         :return: топик сообщения
         """
@@ -87,11 +88,12 @@ class SimpleTransportHub:
             return result
 
 
-config = read_config()
-server = SimpleTransportHub()
-start_server = websockets.serve(server.ws_handler, config['transport_hub']['host'], config['transport_hub']['port'])
-loop = asyncio.get_event_loop()
-loop.run_until_complete(start_server)
-loop.run_forever()
+if __name__ == '__main__':
+    config = read_config()
+    server = SimpleTransportHub()
+    start_server = websockets.serve(server.ws_handler, config['transport_hub']['host'], config['transport_hub']['port'])
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_server)
+    loop.run_forever()
 
 

@@ -9,9 +9,9 @@ else
 endif
 
 help:
-	@echo "build: build environment and install requirements"
-	@echo "run: run services & console"
-	@echo "os_ver: system type"
+	@echo "build -- build environment and install requirements"
+	@echo "run -- run services & console"
+	@echo "os_ver -- system type"
 build:
 	$(build_script)
 run:

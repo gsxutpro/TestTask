@@ -65,6 +65,7 @@ def process_message(msg):
 def store_trade(msg):
     """
     Сохранение сделки в текущий период
+
     :param msg: словать значений от внешнего API
     """
     keys = ['s', 'E', 'p', 'q', 'T']
@@ -81,6 +82,7 @@ def store_trade(msg):
 def aggregate_ohlc(msg):
     """
     Аггрегирование данных сделок за 1 минуту по серверному времени
+
     :param msg: словать значений от внешнего API
     """
     for s, tr in trades.items():
@@ -96,6 +98,7 @@ def aggregate_ohlc(msg):
 def get_ohlc_volume(lst, period):
     """
     Получает OHLCV данные из списка сделок за период
+
     :param lst: список входных данных по сделкам
     :param period: период
     :return: словать OHLCV данных
@@ -109,6 +112,7 @@ def get_ohlc_volume(lst, period):
 def check_1m(tr):
     """
     Проверка наступления нового периода (1m)
+
     :param tr:
     :return: True -- новый период наступил, False -- новый период не наступил
     """
@@ -122,6 +126,7 @@ def check_1m(tr):
 def send_message(msg):
     """
     Отправка сообщения в формате JSON на trunsport_hub
+
     :param msg: сообщение для отправки
     """
     try:
@@ -138,6 +143,7 @@ def send_message(msg):
 def connect_to_transport_hub(host, port):
     """
     Подключение к сервису trunsport_hub
+
     :param host: адрес сервиса
     :param port: порт сервиса
     """
@@ -151,6 +157,7 @@ def connect_to_transport_hub(host, port):
 def serve(symbol, api_key, api_secret):
     """
     Запуск клиента Binance API
+
     :param symbol:
     :param api_key:
     :param api_secret:
